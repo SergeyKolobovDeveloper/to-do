@@ -1,20 +1,3 @@
-<?php
-require_once 'db.php';
-
-if($_SERVER['REQUEST_METHOD'] ==='POST' && !empty($_POST['title'])){
-
-    $title = trim($_POST['title']);
-    $sql = 'INSERT INTO `tasks` (title) VALUES (:title)';
-
-    $result = $pdo->prepare($sql);
-    $result->bindParam(':title', $title);
-
-    $result->execute();
-
-    header('Location: index.php');
-    exit;
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,19 +11,18 @@ if($_SERVER['REQUEST_METHOD'] ==='POST' && !empty($_POST['title'])){
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <h1 class="mb-4 text-center">Додати нову задачу!</h1>
-                <form action="" method="POST" class="shadow p-4 rounded bg-light">
+                <form action="../actions/add-task.php" method="POST" class="shadow p-4 rounded bg-light">
                     <div class="mb-3">
                         <label for="title" class="form-label">Назва задачі</label>
                         <input type="text" name="title" id="title" class="form-control" placeholder="Введіть текст задачі..." required>
                     </div>
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-success">Додати</button>
-                        <a href="index.php" class="btn btn-secondary">Назад на головну</a>
+                        <a href="dashboard.php" class="btn btn-secondary">Назад на головну</a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-
 </body>
 </html>

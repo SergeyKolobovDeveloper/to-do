@@ -1,5 +1,5 @@
 <?php
-require_once "db.php";
+require_once "../config/db.php";
 
 $id = $_GET['id'];
 
@@ -9,18 +9,6 @@ $result->execute(['id' => $id]);
 
 $task = $result->fetch(PDO::FETCH_ASSOC);
 
-if($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $sql = 'UPDATE `tasks` SET title = :title WHERE id = :id';
-
-    $result = $pdo->prepare($sql);
-    $result->bindParam(':id', $_POST['id']);
-    $result->bindParam(':title', $_POST['title']);
-
-    $result->execute();
-
-    header('Location: index.php');
-    exit;
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,7 +23,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <h1 class="mb-4 text-center">Редагувати задачу!</h1>
-                <form action="" method="post" class="shadow p-4 rounded bg-light">
+                <form action="../actions/edit-task.php" method="post" class="shadow p-4 rounded bg-light">
                     <div class="mb-3">
                         <label for="title" class="form-label">Назва</label>
                         <input type="text" name="title" id="title" class="form-control" value="<?= htmlspecialchars($task['title']) ?>" required>
@@ -43,7 +31,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
                     <div class="d-flex gap-2">
                         <input type="submit"  class="btn btn-primary" value="Зберегти зміни">
-                        <a href="index.php" class="btn btn-secondary">Назад на головну</a>
+                        <a href="dashboard.php" class="btn btn-secondary">Назад на головну</a>
                     </div>
                 </form>
             </div>

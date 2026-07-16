@@ -1,57 +1,23 @@
 <?php
-require_once 'db.php';
 
-$sql = "SELECT * FROM `tasks`";
+$title = "TaskFlow — Простий менеджер задач";
 
-$result = $pdo->prepare($sql);
-$result->execute();
-
-$data = $result->fetchAll(PDO::FETCH_ASSOC);
+require_once __DIR__ . '/includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <title>To-Do list</title>
-</head>
-<body>
-    <div class="container mt-5">
-        <div class="text-center">
-            <h1>Менеджер задач!</h1>
-        </div>
-        <div>
-            <a href="create.php" class="btn btn-success mb-3">Додати задачу!</a>
-        </div>
-        <br>
-        <div class="text-center">
-            <table class="table table-bordered border-primary">
-                <tr>
-                    <th>Назва</th>
-                    <th>Дії</th>
-                    <th>Статус</th>
-                </tr>
-                <?php foreach($data as $item):?>
-                    <tr>
-                        <td><a href="status.php?id=<?=$item['id']?>"><?=htmlspecialchars($item['title'])?></a></td>
-                        <td>
-                            <div>
-                                <a href="update.php?id=<?= $item['id'] ?>"  class="btn btn-primary btn-sm">Редагувати</a>
-                                <a href="delete.php?id=<?= $item['id']?>"  class="btn btn-danger btn-sm">Видалити</a>
-                            </div>
-                        </td>
-                        <td>
-                            <?php if($item['is_completed'] === 1):?>
-                                <span class="badge bg-success">Виконано!</span>
-                            <?php else: ?>
-                                <span class="badge bg-secondary">Не виконано!</span>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </table>
+<main class="container my-5 py-5 text-center flex-grow-1">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="display-4 fw-bold text-dark fst-italic mb-4">Керуй своїми завданнями без зусиль</h1>
+            <p class="lead text-secondary mb-5">
+                TaskFlow — це простий, швидкий та зручний менеджер задач, який допоможе тобі тримати все під контролем та підвищити власну продуктивність.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="#" class="btn btn-success btn-lg px-4">Почати безкоштовно</a>
+                <a href="#" class="btn btn-outline-secondary btn-lg px-4">Дізнатися більше</a>
+            </div>
         </div>
     </div>
-</body>
-</html>
+</main>
+<?php
+require_once __DIR__ . '/includes/footer.php';
+?>
