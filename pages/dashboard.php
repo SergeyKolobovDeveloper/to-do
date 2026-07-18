@@ -1,22 +1,22 @@
 <?php
-require_once '../config/db.php';
+session_start();
+if(!isset($_SESSION['user'])){
+    header('Location: /to-do/auth/login.php');
+    exit;
+}
+require_once __DIR__ . '/../config/db.php';
 
-$sql = "SELECT * FROM `tasks`";
+$userId = $_SESSION['user']['id'];
 
+$sql = 'SELECT * FROM `tasks` WHERE `user_id` = :user_id';
 $result = $pdo->prepare($sql);
-$result->execute();
+$result->execute(['user_id' => $userId]);
 
 $data = $result->fetchAll(PDO::FETCH_ASSOC);
+
+require_once __DIR__ . '/../includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <title>To-Do list</title>
-</head>
-<body>
+<main class="container my-5 flex-grow-1 d-flex align-items-center justify-content-center">
     <div class="container mt-5">
         <div class="text-center">
             <h1>Менеджер задач!</h1>
@@ -53,5 +53,7 @@ $data = $result->fetchAll(PDO::FETCH_ASSOC);
             </table>
         </div>
     </div>
-</body>
-</html>
+</main>
+<?php
+require_once __DIR__ . '/../includes/footer.php';
+?>

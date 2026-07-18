@@ -1,7 +1,9 @@
 <?php
 session_start();
 
-unset($_SERVER['user']);
+$_SESSION = [];
+
+session_destroy();
 
 header('Location: /to-do/index.php');
 exit;

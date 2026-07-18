@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 $title = "TaskFlow — Простий менеджер задач";
 
 require_once __DIR__ . '/includes/header.php';
