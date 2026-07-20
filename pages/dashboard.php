@@ -21,6 +21,16 @@ require_once __DIR__ . '/../includes/header.php';
         <div class="text-center">
             <h1>Менеджер задач!</h1>
         </div>
+        <?php if (empty($data)): ?>
+        <div class="text-center py-5 border rounded bg-light shadow-sm">
+            <i class="bi bi-clipboard-check display-1 text-muted"></i>
+            <h3 class="mt-3 text-secondary">У вас поки немає створених задач</h3>
+            <p class="text-muted">Час спланувати свої справи! Натисніть кнопку нижче, щоб створити першу задачу.</p>
+            <a href="create.php" class="btn btn-success btn-lg mt-2">
+                <i></i>Додати першу задачу
+            </a>
+        </div>
+        <?php else: ?>
         <div>
             <a href="create.php" class="btn btn-success mb-3">Додати задачу!</a>
         </div>
@@ -30,7 +40,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <tr>
                     <th>Назва</th>
                     <th>Дії</th>
-                    <th>Статус</th>
+                    <th style="width: 160px;" class="text-center">Статус</th>
                 </tr>
                 <?php foreach($data as $item):?>
                     <tr>
@@ -53,6 +63,7 @@ require_once __DIR__ . '/../includes/header.php';
             </table>
         </div>
     </div>
+    <?php endif; ?>
 </main>
 <?php
 require_once __DIR__ . '/../includes/footer.php';

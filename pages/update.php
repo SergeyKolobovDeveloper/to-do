@@ -1,14 +1,31 @@
 <?php
+session_start();
+if(!isset($_SESSION['user'])){
+    header('Location: /to-do/auth/login.php');
+    exit;
+}
 require_once "../config/db.php";
 
-$id = $_GET['id'];
+if(empty($_GET['id'])){
+    header('Location: dashboard.php');
+    exit;
+}
 
-$sql = 'SELECT * FROM `tasks` WHERE id = :id';
+$id = $_GET['id'];
+$userId = $_SESSION['user']['id'];
+
+$sql = 'SELECT * FROM `tasks` WHERE id = :id AND user_id = :user_id';
 $result = $pdo->prepare($sql);
-$result->execute(['id' => $id]);
+$result->execute([
+    'id' => $id,
+    'user_id' => $userId
+    ]);
 
 $task = $result->fetch(PDO::FETCH_ASSOC);
-
+if(!$task){
+    header('Location: dashboard.php');
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,7 +47,7 @@ $task = $result->fetch(PDO::FETCH_ASSOC);
                     </div>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
                     <div class="d-flex gap-2">
-                        <input type="submit"  class="btn btn-primary" value="Зберегти зміни">
+                        <button type="submit" class="btn btn-primary">Зберегти зміни</button>
                         <a href="dashboard.php" class="btn btn-secondary">Назад на головну</a>
                     </div>
                 </form>
