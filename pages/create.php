@@ -1,3 +1,11 @@
+<?php
+session_start();
+
+$errors = $_SESSION['errors'] ?? [];
+$old = $_SESSION['old'] ?? [];
+
+unset($_SESSION['errors'], $_SESSION['old']);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +22,13 @@
                 <form action="../actions/add-task.php" method="POST" class="shadow p-4 rounded bg-light">
                     <div class="mb-3">
                         <label for="title" class="form-label">Назва задачі</label>
-                        <input type="text" name="title" id="title" class="form-control" placeholder="Введіть текст задачі..." required>
+                        <input type="text" name="title" id="title" class="form-control <?= !empty($errors['title']) ? 'is-invalid' : '' ?>"
+                            placeholder="Введіть текст задачі..." value="<?= htmlspecialchars($old['title'] ?? '') ?>">
+                        <?php if (!empty($errors['title'])): ?>
+                            <div class="invalid-feedback">
+                                <?= implode('<br>', $errors['title']) ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-success">Додати</button>

@@ -7,8 +7,17 @@ if(!isset($_SESSION['user'])){
 require_once __DIR__ . '/../config/db.php';
 
 $userId = $_SESSION['user']['id'];
+$filter = $_GET['filter'] ?? 'all';
 
 $sql = 'SELECT * FROM `tasks` WHERE `user_id` = :user_id';
+
+if ($filter === 'active'){
+    $sql .= ' AND is_completed = 0';
+} elseif ($filter ==='completed') {
+    $sql .= ' AND is_completed = 1';
+}
+
+$sql .= ' ORDER BY id DESC';
 $result = $pdo->prepare($sql);
 $result->execute(['user_id' => $userId]);
 
@@ -35,6 +44,21 @@ require_once __DIR__ . '/../includes/header.php';
             <a href="create.php" class="btn btn-success mb-3">Додати задачу!</a>
         </div>
         <br>
+        <?php if(isset($_SESSION['success'])): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?= $_SESSION['success'] ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['success']);?>
+        <?php endif; ?>
+        <?php 
+            $filter = $_GET['filter'] ?? 'all';
+        ?>
+        <div class="btn-group mb-3" role="group" aria-label="Фільтр задач">
+            <a href="dashboard.php?filter=all" class="btn btn-outline-primary <?= $filter === 'all' ? 'active' : '' ?>">Всі</a>
+            <a href="dashboard.php?filter=active" class="btn btn-outline-warning <?= $filter === 'active' ? 'active' : '' ?>">Активні</a>
+            <a href="dashboard.php?filter=completed" class="btn btn-outline-success <?= $filter === 'completed' ? 'active' : '' ?>">Виконані</a>
+        </div>
         <div class="text-center">
             <table class="table table-bordered border-primary">
                 <tr>
@@ -44,7 +68,8 @@ require_once __DIR__ . '/../includes/header.php';
                 </tr>
                 <?php foreach($data as $item):?>
                     <tr>
-                        <td><a href="../actions/status-task.php?id=<?= $item['id']?>"><?=htmlspecialchars($item['title'])?></a></td>
+                        <td><a href="../actions/status-task.php?id=<?= $item['id']?>&filter=<?= $filter ?>">
+                            <?= htmlspecialchars($item['title']) ?></a></td>
                         <td>
                             <div>
                                 <a href="update.php?id=<?=$item['id'] ?>"  class="btn btn-primary btn-sm">Редагувати</a>
@@ -52,7 +77,7 @@ require_once __DIR__ . '/../includes/header.php';
                             </div>
                         </td>
                         <td>
-                            <?php if($item['is_completed'] === 1):?>
+                            <?php if($item['is_completed'] == 1):?>
                                 <span class="badge bg-success">Виконано!</span>
                             <?php else: ?>
                                 <span class="badge bg-secondary">Не виконано!</span>

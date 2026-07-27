@@ -1,5 +1,11 @@
 <?php
 session_start();
+
+$errors = $_SESSION['errors'] ?? [];
+$old = $_SESSION['old'] ?? [];
+
+unset($_SESSION['errors'], $_SESSION['old']);
+
 if(!isset($_SESSION['user'])){
     header('Location: /to-do/auth/login.php');
     exit;
@@ -11,7 +17,12 @@ if(empty($_GET['id'])){
     exit;
 }
 
-$id = $_GET['id'];
+if (empty($_GET['id'])) {
+    header('Location: dashboard.php');
+    exit;
+}
+
+$id = (int)$_GET['id'];
 $userId = $_SESSION['user']['id'];
 
 $sql = 'SELECT * FROM `tasks` WHERE id = :id AND user_id = :user_id';
@@ -43,7 +54,13 @@ if(!$task){
                 <form action="../actions/edit-task.php" method="post" class="shadow p-4 rounded bg-light">
                     <div class="mb-3">
                         <label for="title" class="form-label">Назва</label>
-                        <input type="text" name="title" id="title" class="form-control" value="<?= htmlspecialchars($task['title']) ?>" required>
+                        <input type="text" name="title" id="title" class="form-control <?= !empty($errors['title']) ? 'is-invalid' : '' ?>" 
+                            value="<?= htmlspecialchars($old['title'] ?? $task['title']) ?>">
+                        <?php if (!empty($errors['title'])): ?>
+                            <div class="invalid-feedback">
+                                <?= implode('<br>', $errors['title']) ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <input type="hidden" name="id" value="<?= $task['id'] ?>">
                     <div class="d-flex gap-2">

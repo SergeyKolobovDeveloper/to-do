@@ -15,6 +15,7 @@ if(empty($_GET['id'])){
 
     $id = (int)$_GET['id'];
     $userId = $_SESSION['user']['id'];
+    $filter = $_GET['filter'] ?? 'all';
     
     $sql = 'UPDATE `tasks` SET is_completed = NOT is_completed WHERE id = :id AND user_id = :user_id';
 

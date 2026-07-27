@@ -24,5 +24,7 @@ if(empty($_GET['id'])){
 
     $result->execute();
 
+    $_SESSION['success'] = 'Задачу успішно видалено! 🗑️';
+
     header('Location: ../pages/dashboard.php');
     exit;
