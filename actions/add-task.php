@@ -2,7 +2,7 @@
 session_start();
 
 if(!isset($_SESSION['user'])){
-    header('Location: /to-to/auth/login.php');
+    header('Location: /to-do/auth/login.php');
     exit;
 }
 
@@ -11,11 +11,13 @@ require_once '../config/db.php';
 if($_SERVER['REQUEST_METHOD'] ==='POST'){
 
     $errorBag = [
-        'title' => []
+        'title' => [],
+        'due_date' => []
     ];
 
     $title = trim($_POST['title'] ?? '');
     $userId = $_SESSION['user']['id'];
+    $dueDate = !empty($_POST['due_date']) ? $_POST['due_date'] : null;
 
     if(empty($title)){
         $errorBag['title'][] = 'Поле не може бути пустим!';
@@ -25,20 +27,25 @@ if($_SERVER['REQUEST_METHOD'] ==='POST'){
         $errorBag['title'][] = 'Назва задачі надто довга (максимум 255 символів)!';
     }
 
-    if(!empty($errorBag['title'])){
+    if(!empty($dueDate) && $dueDate < date('Y-m-d')){
+        $errorBag['due_date'][] = 'Вказана дата не може бути у минулому';
+    }
+
+    if(!empty($errorBag['title']) || !empty($errorBag['due_date'])){
         $_SESSION['errors'] = $errorBag;
         $_SESSION['old'] = $_POST;
         header('Location: ../pages/create.php');
         exit;
     }
 
-    $sql = 'INSERT INTO `tasks` (title, user_id) VALUES (:title, :user_id)';
+    $sql = 'INSERT INTO `tasks` (title, user_id, due_date) VALUES (:title, :user_id, :due_date)';
 
     $result = $pdo->prepare($sql);
-    $result->bindParam(':title', $title);
-    $result->bindParam(':user_id', $userId);
-
-    $result->execute();
+    $result->execute([
+        'title' => $title,
+        'user_id' => $userId,
+        'due_date' => $dueDate
+    ]);
 
     $_SESSION['success'] = 'Нову задачу успішно створено! ✨';
 

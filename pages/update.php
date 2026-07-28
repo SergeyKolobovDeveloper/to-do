@@ -17,11 +17,6 @@ if(empty($_GET['id'])){
     exit;
 }
 
-if (empty($_GET['id'])) {
-    header('Location: dashboard.php');
-    exit;
-}
-
 $id = (int)$_GET['id'];
 $userId = $_SESSION['user']['id'];
 
@@ -32,8 +27,8 @@ $result->execute([
     'user_id' => $userId
     ]);
 
-$task = $result->fetch(PDO::FETCH_ASSOC);
-if(!$task){
+$data = $result->fetch(PDO::FETCH_ASSOC);
+if(!$data){
     header('Location: dashboard.php');
     exit;
 }
@@ -55,14 +50,19 @@ if(!$task){
                     <div class="mb-3">
                         <label for="title" class="form-label">Назва</label>
                         <input type="text" name="title" id="title" class="form-control <?= !empty($errors['title']) ? 'is-invalid' : '' ?>" 
-                            value="<?= htmlspecialchars($old['title'] ?? $task['title']) ?>">
+                            value="<?= htmlspecialchars($old['title'] ?? $data['title']) ?>">
                         <?php if (!empty($errors['title'])): ?>
                             <div class="invalid-feedback">
                                 <?= implode('<br>', $errors['title']) ?>
                             </div>
                         <?php endif; ?>
                     </div>
-                    <input type="hidden" name="id" value="<?= $task['id'] ?>">
+                    <div class="mb-3">
+                    <label for="due_date" class="form-label">Дата виконання</label>
+                    <input type="date" name="due_date" id="due_date" class="form-control" 
+                        value="<?= htmlspecialchars($old['due_date'] ?? $data['due_date'] ?? '') ?>">
+                    </div>
+                    <input type="hidden" name="id" value="<?= $data['id'] ?>">
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">Зберегти зміни</button>
                         <a href="dashboard.php" class="btn btn-secondary">Назад на головну</a>

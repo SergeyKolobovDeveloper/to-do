@@ -30,6 +30,16 @@ unset($_SESSION['errors'], $_SESSION['old']);
                             </div>
                         <?php endif; ?>
                     </div>
+                    <div class="mb-3">
+                        <label for="due_date" class="from-label">Кінцевий термін (Дедлайн)</label>
+                        <input type="date" name="due_date" id="due_date" class="from-control <?= !empty($errors['due_date']) ? 'is-invalid' : '' ?>"
+                            value="<?= htmlspecialchars($old['due_date'] ?? '') ?>">
+                        <?php if (!empty($errors['due_date'])): ?>
+                            <div class="invalid-feedback">
+                                <?= implode('<br>', $errors['due_date']) ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-success">Додати</button>
                         <a href="dashboard.php" class="btn btn-secondary">Назад на головну</a>
