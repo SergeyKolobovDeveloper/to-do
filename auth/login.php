@@ -41,7 +41,7 @@ require_once __DIR__ . '/../includes/header.php';
                         Не вдаєть увійти? <a href="#" class="text-decoration-none link-success fw-semibold">Відновити акаунт</a>
                     </p>
                     <p class="mb-0 text-muted">
-                        Не має акаунту? <a href="/to-do/auth/register.php" class="text-decoration-none link-success fw-semibold">Створити акаунт</a>
+                        Не має акаунту? <a href="<?= BASE_URL ?>/auth/register.php" class="text-decoration-none link-success fw-semibold">Створити акаунт</a>
                     </p>
                 </div>
             </form>

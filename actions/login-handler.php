@@ -36,7 +36,7 @@ if($hasErrors){
 
     $_SESSION['old_values'] = ['email' => $email ];
 
-    header('Location: /to-do/auth/login.php');
+    header('Location:' . BASE_URL . '/auth/login.php');
     exit;
 }
 
@@ -52,7 +52,7 @@ if(!$data || !password_verify($password, $data['password'])){
     $_SESSION['login_errors'] = $errorBag;
     $_SESSION['old_values'] = ['email' => $email];
 
-    header('Location: /to-do/auth/login.php');
+    header('Location:' . BASE_URL . '/auth/login.php');
     exit;
 }
 
@@ -63,5 +63,5 @@ $_SESSION['user'] = [
 
 unset($_SESSION['old_values']);
 
-header('Location: /to-do/pages/dashboard.php');
+header('Location:' . BASE_URL . '/pages/dashboard.php');
 exit;

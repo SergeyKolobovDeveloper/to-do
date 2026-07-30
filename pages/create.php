@@ -42,7 +42,7 @@ unset($_SESSION['errors'], $_SESSION['old']);
                     </div>
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-success">Додати</button>
-                        <a href="dashboard.php" class="btn btn-secondary">Назад на головну</a>
+                        <a href="<?= BASE_URL ?>/pages/dashboard.php" class="btn btn-secondary">Назад на головну</a>
                     </div>
                 </form>
             </div>

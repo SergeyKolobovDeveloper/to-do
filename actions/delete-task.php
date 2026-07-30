@@ -2,7 +2,7 @@
 session_start();
 
 if(!isset($_SESSION['user'])){
-    header('Location: /to-do/auth/login.php');
+    header('Location:'. BASE_URL .'/auth/login.php');
     exit;
 }
 require_once '../config/db.php';

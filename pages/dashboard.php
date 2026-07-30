@@ -1,7 +1,7 @@
 <?php
 session_start();
 if(!isset($_SESSION['user'])){
-    header('Location: /to-do/auth/login.php');
+    header('Location:' . BASE_URL . '/auth/login.php');
     exit;
 }
 require_once __DIR__ . '/../config/db.php';
@@ -47,7 +47,7 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
         <?php else: ?>
         <div>
-            <a href="create.php" class="btn btn-success mb-3">Додати задачу!</a>
+            <a href="<?= BASE_URL ?>/pages/create.php" class="btn btn-success mb-3">Додати задачу!</a>
         </div>
         <br>
         <?php if(isset($_SESSION['success'])): ?>
@@ -58,9 +58,9 @@ require_once __DIR__ . '/../includes/header.php';
             <?php unset($_SESSION['success']);?>
         <?php endif; ?>
         <div class="btn-group mb-3" role="group" aria-label="Фільтр задач">
-            <a href="dashboard.php?filter=all" class="btn btn-outline-primary <?= $filter === 'all' ? 'active' : '' ?>">Всі</a>
-            <a href="dashboard.php?filter=active" class="btn btn-outline-warning <?= $filter === 'active' ? 'active' : '' ?>">Активні</a>
-            <a href="dashboard.php?filter=completed" class="btn btn-outline-success <?= $filter === 'completed' ? 'active' : '' ?>">Виконані</a>
+            <a href="<?= BASE_URL ?>/pages/dashboard.php?filter=all" class="btn btn-outline-primary <?= $filter === 'all' ? 'active' : '' ?>">Всі</a>
+            <a href="<?= BASE_URL ?>/pages/dashboard.php?filter=active" class="btn btn-outline-warning <?= $filter === 'active' ? 'active' : '' ?>">Активні</a>
+            <a href="<?= BASE_URL ?>/pages/dashboard.php?filter=completed" class="btn btn-outline-success <?= $filter === 'completed' ? 'active' : '' ?>">Виконані</a>
         </div>
         <div class="text-center">
             <table class="table table-bordered border-primary align-middle">
@@ -105,8 +105,8 @@ require_once __DIR__ . '/../includes/header.php';
                                             <span class="text-muted">—</span>
                                     <?php endif; ?>
                                 </td>
-                                <td>
-                                    <div>
+                                <td class="text-nowrap">
+                                    <div class="d-flex align-items-center gap-2">
                                         <a href="update.php?id=<?=$item['id'] ?>"  class="btn btn-primary btn-sm">Редагувати</a>
                                         <a href="../actions/delete-task.php?id=<?= $item['id']?>"  class="btn btn-danger btn-sm">Видалити</a>
                                     </div>

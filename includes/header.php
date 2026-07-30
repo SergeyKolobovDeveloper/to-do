@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . '/../config/app.php'; ?>
 <!DOCTYPE html>
 <html lang="ua">
 <head>
@@ -12,13 +13,13 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
             <div class="container">
-                <a href="/to-do/index.php" class="navbar-brand fw-bold text-primary d-flex align-items-center">
+                <a href="<?= BASE_URL ?>/index.php" class="navbar-brand fw-bold text-primary d-flex align-items-center">
                     <i class="bi bi-clipboard2-check me-2"></i>
                     <span>TaskFlow</span>
                 </a>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <div class="navbar-nav ms-3">
-                        <a class="nav-link" href="/to-do/index.php">Головна</a>
+                        <a class="nav-link" href="<?= BASE_URL ?>/index.php">Головна</a>
                         <?php if(!$isDashboard):?>
                             <a class="nav-link" href="#">Про нас</a>
                             <a class="nav-link" href="#">Контакти</a>
@@ -31,14 +32,14 @@
                             <i class="bi bi-person-circle me-1"></i>Привіт, <strong><?= htmlspecialchars($_SESSION['user']['name']) ?></strong>!
                         </span>
                         <?php if(!$isDashboard): ?>
-                        <a href="/to-do/pages/dashboard.php" class="btn btn-sm btn-outline-primary fw-semibold">
+                        <a href="<?= BASE_URL ?>/pages/dashboard.php" class="btn btn-sm btn-outline-primary fw-semibold">
                             <i class="bi bi-columns-gap me-1"></i>Особистий кабінет
                         </a>
                         <?php endif;?>
-                        <a href="/to-do/actions/logout.php" class="btn btn-outline-danger">Вийти</a>
+                        <a href="<?= BASE_URL ?>/actions/logout.php" class="btn btn-outline-danger">Вийти</a>
                     <?php else: ?>
-                        <a href="/to-do/auth/login.php" class="btn btn-outline-success">Увійти</a>
-                        <a href="/to-do/auth/register.php" class="btn btn-success">Створити акаунт</a>
+                        <a href="<?= BASE_URL ?>/auth/login.php" class="btn btn-outline-success">Увійти</a>
+                        <a href="<?= BASE_URL ?>/auth/register.php" class="btn btn-success">Створити акаунт</a>
                     <?php endif;?>
                 </div>
             </div>

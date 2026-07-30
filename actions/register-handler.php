@@ -3,7 +3,7 @@ session_start();
 require_once __DIR__ . '/../config/db.php';
 
 if($_SERVER['REQUEST_METHOD'] !== 'POST'){
-    header('Location: /to-do/auth/register.php');
+    header('Location:' . BASE_URL . '/auth/register.php');
     exit;
 }
    
@@ -66,7 +66,7 @@ if($_SERVER['REQUEST_METHOD'] !== 'POST'){
                 'email' => $email
             ];
             
-            header('Location: /to-do/auth/register.php');
+            header('Location:' . BASE_URL . '/auth/register.php');
             exit;
         }
 
@@ -92,7 +92,7 @@ if($data){
         'login' => $login,
         'email' => $email
     ];
-    header('Location: /to-do/auth/register.php');
+    header('Location:' . BASE_URL . '/auth/register.php');
     exit;
 }
 
@@ -108,5 +108,5 @@ $result->execute([
                     ':password' => $hashedPassword
                 ]);
 unset($_SESSION['old_values']);
-header('Location: /to-do/auth/login.php');
+header('Location:' . BASE_URL . '/auth/login.php');
 exit;
