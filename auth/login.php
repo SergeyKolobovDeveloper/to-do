@@ -3,7 +3,10 @@ session_start();
 
 $errors = $_SESSION['login_errors'] ?? [];
 $oldValues = $_SESSION['old_values'] ?? [];
-unset($_SESSION['login_errors'], $_SESSION['old_values']);
+
+$successMessage = $_SESSION['success_message'] ?? null;
+
+unset($_SESSION['login_errors'], $_SESSION['old_values'], $_SESSION['success_message']);
 
 require_once __DIR__ . '/../includes/header.php';
 ?>
@@ -11,6 +14,13 @@ require_once __DIR__ . '/../includes/header.php';
     <div class="card shadow" style="width: 100%; max-width: 400px;">
         <div class="card-body p-4">
             <h2 class="mb-4 text-center">Авторизація</h2>
+
+            <?php if ($successMessage): ?>
+                <div class="alert alert-success alert-dismissible fade show text-center mb-3" role="alert">
+                    <?= htmlspecialchars($successMessage) ?>
+                </div>
+            <?php endif; ?>
+
             <form action="../actions/login-handler.php" method="post">
                 <div class="mb-3">
                     <label for="email" class="form-label"></label>
@@ -38,10 +48,10 @@ require_once __DIR__ . '/../includes/header.php';
                     <input type="submit" class="btn btn-success w-100 mb-3" value="Увійти">
                 <div class="text-center mt-3 small">
                     <p class="mb-1 text-muted">
-                        Не вдаєть увійти? <a href="#" class="text-decoration-none link-success fw-semibold">Відновити акаунт</a>
+                        Не вдається увійти? <a href="#" class="text-decoration-none link-success fw-semibold">Відновити акаунт</a>
                     </p>
                     <p class="mb-0 text-muted">
-                        Не має акаунту? <a href="<?= BASE_URL ?>/auth/register.php" class="text-decoration-none link-success fw-semibold">Створити акаунт</a>
+                        Немає акаунту? <a href="<?= BASE_URL ?>/auth/register.php" class="text-decoration-none link-success fw-semibold">Створити акаунт</a>
                     </p>
                 </div>
             </form>
