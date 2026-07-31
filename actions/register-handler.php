@@ -76,38 +76,65 @@ $result->execute([
 ]);
 $data = $result->fetch(PDO::FETCH_ASSOC);
 
-if ($data) {
-    if ($data['login'] === $login) {
-        $errorBag['login'][] = 'Такий логін вже зайнятий, спробуйте інший!';
-    }
-    if ($data['email'] === $email) {
-        $errorBag['email'][] = 'Цей email вже зареєстрований!';
-    }
-
-    $_SESSION['register_errors'] = $errorBag;
-    $_SESSION['old_values'] = [
-        'name' => $name,
-        'login' => $login,
-        'email' => $email
-    ];
-    header('Location: ' . BASE_URL . '/auth/register.php');
-    exit;
-}
-
 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 $token = bin2hex(random_bytes(32));
 
-$sql = 'INSERT INTO `users` (`name`, `login`, `email`, `password`, `verification_token`, `is_verified`) 
-        VALUES (:name, :login, :email, :password, :token, 0)';
+if ($data) {
+    if ((int)$data['is_verified'] === 1) {
+        if ($data['login'] === $login) {
+            $errorBag['login'][] = 'Такий логін вже зайнятий, спробуйте інший!';
+        }
+        if ($data['email'] === $email) {
+            $errorBag['email'][] = 'Цей email вже зареєстрований!';
+        }
 
-$result = $pdo->prepare($sql);
-$result->execute([
-    ':name' => $name,
-    ':login' => $login,
-    ':email' => $email,
-    ':password' => $hashedPassword,
-    ':token' => $token
-]);
+        $_SESSION['register_errors'] = $errorBag;
+        $_SESSION['old_values'] = [
+            'name' => $name,
+            'login' => $login,
+            'email' => $email
+        ];
+        header('Location: ' . BASE_URL . '/auth/register.php');
+        exit;
+    }
+
+    if ($data['login'] === $login && $data['email'] !== $email) {
+        $errorBag['login'][] = 'Такий логін вже зайнятий, спробуйте інший!';
+        $_SESSION['register_errors'] = $errorBag;
+        $_SESSION['old_values'] = [
+            'name' => $name,
+            'login' => $login,
+            'email' => $email
+        ];
+        header('Location: ' . BASE_URL . '/auth/register.php');
+        exit;
+    }
+
+    $updateSql = 'UPDATE `users` 
+                  SET `name` = :name, `login` = :login, `password` = :password, `verification_token` = :token 
+                  WHERE `email` = :email AND `is_verified` = 0';
+    $updateStmt = $pdo->prepare($updateSql);
+    $updateStmt->execute([
+        ':name' => $name,
+        ':login' => $login,
+        ':password' => $hashedPassword,
+        ':token' => $token,
+        ':email' => $email
+    ]);
+
+} else {
+    $sql = 'INSERT INTO `users` (`name`, `login`, `email`, `password`, `verification_token`, `is_verified`) 
+            VALUES (:name, :login, :email, :password, :token, 0)';
+
+    $result = $pdo->prepare($sql);
+    $result->execute([
+        ':name' => $name,
+        ':login' => $login,
+        ':email' => $email,
+        ':password' => $hashedPassword,
+        ':token' => $token
+    ]);
+}
 
 $verifyLink = BASE_URL . '/auth/verify.php?token=' . $token;
 
@@ -123,6 +150,6 @@ sendMail($email, $subject, $body);
 
 unset($_SESSION['old_values']);
 
-$_SESSION['success_message'] = 'Реєстрація успішна! Ми відправили лист для підтвердження на вашу пошту. Якщо не бачите листа в «Вхідних», обов’язково перевірте папку «Спам»!';
+$_SESSION['success_message'] = 'Реєстрація успішна! Ми відправили новий лист для підтвердження на вашу пошту. Якщо не бачите листа в «Вхідних», обов’язково перевірте папку «Спам»!';
 header('Location: ' . BASE_URL . '/auth/login.php');
 exit;
