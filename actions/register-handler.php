@@ -13,7 +13,8 @@ $errorBag = [
     'login' => [],
     'email' => [],
     'password' => [],
-    'password_confirm' => []
+    'password_confirm' => [],
+    'check_box' => []
 ];
 
 $name = trim($_POST['name'] ?? '');
@@ -47,6 +48,11 @@ if (empty($password_confirm)) {
     $errorBag['password_confirm'][] = 'Поле не може бути пустим!';
 } elseif ($password !== $password_confirm) {
     $errorBag['password_confirm'][] = 'Паролі повинні збігатися!';
+}
+
+$check_box = $_POST['check_box'] ?? null;
+if (!isset($check_box)) {
+    $errorBag['check_box'][] = 'Ви повинні погодитися з правилами сайту!';
 }
 
 $hasErrors = false;

@@ -48,7 +48,7 @@ require_once __DIR__ . '/../includes/header.php';
                     <input type="submit" class="btn btn-success w-100 mb-3" value="Увійти">
                 <div class="text-center mt-3 small">
                     <p class="mb-1 text-muted">
-                        Не вдається увійти? <a href="#" class="text-decoration-none link-success fw-semibold">Відновити акаунт</a>
+                        Не вдається увійти? <a href="<?= BASE_URL ?>/auth/password-recovery.php" class="text-decoration-none link-success fw-semibold">Відновити акаунт</a>
                     </p>
                     <p class="mb-0 text-muted">
                         Немає акаунту? <a href="<?= BASE_URL ?>/auth/register.php" class="text-decoration-none link-success fw-semibold">Створити акаунт</a>

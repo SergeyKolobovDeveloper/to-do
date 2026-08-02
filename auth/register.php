@@ -70,6 +70,18 @@ require_once __DIR__ . '/../includes/header.php';
                         </div>
                     <?php endif; ?>
                 </div>
+                <div class="form-check mb-3">
+                    <input type="checkbox" id="check_box" name="check_box" value="1"
+                        class="form-check-input <?= !empty($errors['check_box']) ? 'is-invalid' : ''; ?>">
+                    <label for="check_box" class="form-check-label">
+                        Я погоджуюся з <a href="#" target="_blank">правилами сайту</a>
+                    </label>
+                    <?php if(!empty($errors['check_box'])): ?>
+                        <div class="invalid-feedback">
+                            <?= implode(', ', $errors['check_box']); ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
                 <input type="submit" class="btn btn-success w-100 mb-3" value="Створити акаунт">
             </form>
         </div>
