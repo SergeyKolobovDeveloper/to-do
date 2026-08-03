@@ -2,6 +2,7 @@
 session_start();
 
 require_once '../config/db.php';
+require_once '../includes/security.php';
 
 if(!isset($_SESSION['user'])){
     header('Location:' . BASE_URL . '/auth/login.php');
@@ -38,11 +39,13 @@ if($_SERVER['REQUEST_METHOD'] ==='POST'){
         exit;
     }
 
+    $encryptedTitle = encryptText($title);
+
     $sql = 'INSERT INTO `tasks` (title, user_id, due_date) VALUES (:title, :user_id, :due_date)';
 
     $result = $pdo->prepare($sql);
     $result->execute([
-        'title' => $title,
+        'title' => $encryptedTitle,
         'user_id' => $userId,
         'due_date' => $dueDate
     ]);

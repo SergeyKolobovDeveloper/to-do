@@ -7,6 +7,7 @@ $old = $_SESSION['old'] ?? [];
 unset($_SESSION['errors'], $_SESSION['old']);
 
 require_once "../config/db.php";
+require_once "../includes/security.php";
 
 if(!isset($_SESSION['user'])){
     $_SESSION['login_error'] = 'Будь ласка, увійдіть у ваш обліковий запис!';
@@ -52,7 +53,7 @@ if(!$data){
                     <div class="mb-3">
                         <label for="title" class="form-label">Назва</label>
                         <input type="text" name="title" id="title" class="form-control <?= !empty($errors['title']) ? 'is-invalid' : '' ?>" 
-                            value="<?= htmlspecialchars($old['title'] ?? $data['title']) ?>">
+                            value="<?= htmlspecialchars($old['title'] ?? decryptText($data['title'])) ?>">
                         <?php if (!empty($errors['title'])): ?>
                             <div class="invalid-feedback">
                                 <?= implode('<br>', $errors['title']) ?>

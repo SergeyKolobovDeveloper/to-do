@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../includes/security.php';
 
 if(!isset($_SESSION['user'])){
     $_SESSION['login_error'] = 'Будь ласка, увійдіть у ваш обліковий запис!';
@@ -86,7 +87,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <tr>
                     <td class="text-start">
                         <a href="../actions/status-task.php?id=<?= $item['id']?>&filter=<?= $filter ?>">
-                        <?= htmlspecialchars($item['title']) ?>
+                        <?= htmlspecialchars(decryptText($item['title'])) ?>
                         </a>
                     </td>
                     <td>

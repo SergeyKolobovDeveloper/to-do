@@ -2,6 +2,7 @@
 session_start();
 
 require_once '../config/db.php';
+require_once '../includes/security.php';
 
 if(!isset($_SESSION['user'])){
     $_SESSION['login_error'] = 'Будь ласка, увійдіть у систему!';
@@ -37,12 +38,14 @@ if($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['id'])) {
         header('Location: ../pages/update.php?id=' . $id);
         exit;
     }
+
+    $encryptedTitle = encryptText($title);
     $sql = 'UPDATE `tasks` SET title = :title, due_date = :due_date WHERE id = :id AND user_id = :user_id';
 
     $result = $pdo->prepare($sql);
 
     $result->execute([
-        'title' => $title,
+        'title' => $encryptedTitle,
         'due_date' => $dueDate,
         'id' => $id,
         'user_id' => $userId
