@@ -6,11 +6,13 @@ $old = $_SESSION['old'] ?? [];
 
 unset($_SESSION['errors'], $_SESSION['old']);
 
+require_once "../config/db.php";
+
 if(!isset($_SESSION['user'])){
+    $_SESSION['login_error'] = 'Будь ласка, увійдіть у ваш обліковий запис!';
     header('Location:' . BASE_URL . '/auth/login.php');
     exit;
 }
-require_once "../config/db.php";
 
 if(empty($_GET['id'])){
     header('Location: ' . BASE_URL . '/pages/dashboard.php');

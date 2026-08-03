@@ -1,5 +1,12 @@
 <?php
 session_start();
+require_once __DIR__ . '/../config/app.php';
+
+if(!isset($_SESSION['user'])){
+    $_SESSION['login_error'] = 'Будь ласка, увійдіть у ваш обліковий запис!';
+    header('Location: ' . BASE_URL . '/auth/login.php');
+    exit;
+}
 
 $errors = $_SESSION['errors'] ?? [];
 $old = $_SESSION['old'] ?? [];

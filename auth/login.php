@@ -21,6 +21,13 @@ require_once __DIR__ . '/../includes/header.php';
                 </div>
             <?php endif; ?>
 
+            <?php if (!empty($_SESSION['login_error'])): ?>
+                <div class="alert alert-danger">
+                    <?= htmlspecialchars($_SESSION['login_error'])?>
+                    <?php unset($_SESSION['login_error']);?>
+                </div>
+            <?php endif; ?>
+
             <form action="../actions/login-handler.php" method="post">
                 <div class="mb-3">
                     <label for="email" class="form-label"></label>

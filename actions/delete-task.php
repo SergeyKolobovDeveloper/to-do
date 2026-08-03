@@ -1,11 +1,12 @@
 <?php
 session_start();
 
+require_once '../config/db.php';
+
 if(!isset($_SESSION['user'])){
     header('Location:'. BASE_URL .'/auth/login.php');
     exit;
 }
-require_once '../config/db.php';
 
 if(empty($_GET['id'])){
 

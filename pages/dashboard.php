@@ -1,10 +1,12 @@
 <?php
 session_start();
+require_once __DIR__ . '/../config/db.php';
+
 if(!isset($_SESSION['user'])){
-    header('Location:' . BASE_URL . '/auth/login.php');
+    $_SESSION['login_error'] = 'Будь ласка, увійдіть у ваш обліковий запис!';
+    header('Location: ' . BASE_URL . '/auth/login.php');
     exit;
 }
-require_once __DIR__ . '/../config/db.php';
 
 $userId = $_SESSION['user']['id'];
 $filter = $_GET['filter'] ?? 'all';
