@@ -11,6 +11,20 @@ if(!isset($_SESSION['user'])){
 
 $userId = $_SESSION['user']['id'];
 $filter = $_GET['filter'] ?? 'all';
+$sort = $_GET['sort'] ?? 'date_asc';
+
+switch($sort) {
+    case 'date_desc':
+        $orderBy = 'due_date IS NULL ASC, due_date DESC, id DESC';
+        break;
+    case 'newest':
+        $orderBy = 'id DESC';
+        break;
+    case 'date_asc':
+    default:
+        $orderBy = 'due_date IS NULL ASC, due_date ASC, id DESC';
+        break;
+}
 
 $sql = 'SELECT * FROM `tasks` WHERE `user_id` = :user_id';
 
@@ -20,7 +34,7 @@ if ($filter === 'active'){
     $sql .= ' AND is_completed = 1';
 }
 
-$sql .= ' ORDER BY id DESC';
+$sql .= " ORDER BY {$orderBy}";
 $result = $pdo->prepare($sql);
 $result->execute(['user_id' => $userId]);
 
@@ -57,11 +71,46 @@ require_once __DIR__ . '/../includes/header.php';
     </div>
         <?php unset($_SESSION['success']);?>
         <?php endif; ?>
-    <div class="btn-group mb-3" role="group" aria-label="Фільтр задач">
-        <a href="<?= BASE_URL ?>/pages/dashboard.php?filter=all" class="btn btn-outline-primary <?= $filter === 'all' ? 'active' : '' ?>">Всі</a>
-        <a href="<?= BASE_URL ?>/pages/dashboard.php?filter=active" class="btn btn-outline-warning <?= $filter === 'active' ? 'active' : '' ?>">Активні</a>
-        <a href="<?= BASE_URL ?>/pages/dashboard.php?filter=completed" class="btn btn-outline-success <?= $filter === 'completed' ? 'active' : '' ?>">Виконані</a>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="btn-group" role="group" aria-label="Фільтр задач">
+            <a href="<?= BASE_URL ?>/pages/dashboard.php?filter=all&sort=<?= $sort ?>" class="btn btn-outline-primary <?= $filter === 'all' ? 'active' : '' ?>">Всі</a>
+            <a href="<?= BASE_URL ?>/pages/dashboard.php?filter=active&sort=<?= $sort ?>" class="btn btn-outline-warning <?= $filter === 'active' ? 'active' : '' ?>">Активні</a>
+            <a href="<?= BASE_URL ?>/pages/dashboard.php?filter=completed&sort=<?= $sort ?>" class="btn btn-outline-success <?= $filter === 'completed' ? 'active' : '' ?>">Виконані</a>
+        </div>
+
+        <div class="dropdown">
+            <button class="btn btn-outline-success btn-sm dropdown-toggle d-flex align-items-center gap-1" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-funnel"></i> 
+                <span>
+                    <?php 
+                        if ($sort === 'date_asc') echo 'За найближчою датою';
+                        elseif ($sort === 'date_desc') echo 'За пізнішою датою';
+                        else echo 'За замовчуванням';
+                    ?>
+                </span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="sortDropdown">
+                <li>
+                    <a class="dropdown-item <?= $sort === 'date_asc' ? 'active' : '' ?>" href="<?= BASE_URL ?>/pages/dashboard.php?filter=<?= $filter ?>&sort=date_asc">
+                        За найближчою датою
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item <?= $sort === 'date_desc' ? 'active' : '' ?>" href="<?= BASE_URL ?>/pages/dashboard.php?filter=<?= $filter ?>&sort=date_desc">
+                        За пізнішою датою
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item <?= $sort === 'newest' ? 'active' : '' ?>" href="<?= BASE_URL ?>/pages/dashboard.php?filter=<?= $filter ?>&sort=newest">
+                        За замовчуванням
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
+
     <div class="table-responsive">
         <table class="table table-bordered border-primary align-middle text-center">
             <thead>
