@@ -1,5 +1,6 @@
 db.local.php
 env.php
+manifest.php
 
 .DS_Store
 Thumbs.db
