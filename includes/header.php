@@ -22,8 +22,8 @@
                     <div class="navbar-nav ms-3">
                         <a class="nav-link" href="<?= BASE_URL ?>/index.php">Головна</a>
                         <?php if(!$isDashboard):?>
-                            <a class="nav-link" href="#">Про нас</a>
-                            <a class="nav-link" href="#">Контакти</a>
+                            <a class="nav-link" href="<?= BASE_URL ?>/pages/about.php">Про проект</a>
+                            <a class="nav-link" href="<?= BASE_URL ?>/pages/contact.php">Зворотний зв'язок</a>
                         <?php endif; ?>
                     </div>
                 </div>

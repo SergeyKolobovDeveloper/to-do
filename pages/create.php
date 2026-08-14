@@ -28,7 +28,7 @@ unset($_SESSION['errors'], $_SESSION['old']);
                 <h1 class="mb-4 text-center">Додати нову задачу!</h1>
                 <form action="../actions/add-task.php" method="POST" class="shadow p-4 rounded bg-light">
                     <div class="mb-3">
-                        <label for="title" class="form-label">Назва задачі</label>
+                        <label for="title" class="from-label">Назва задачі</label>
                         <input type="text" name="title" id="title" class="form-control <?= !empty($errors['title']) ? 'is-invalid' : '' ?>"
                             placeholder="Введіть текст задачі..." value="<?= htmlspecialchars($old['title'] ?? '') ?>">
                         <?php if (!empty($errors['title'])): ?>
