@@ -23,7 +23,7 @@
                         <a class="nav-link" href="<?= BASE_URL ?>/index.php">Головна</a>
                         <?php if(!$isDashboard):?>
                             <a class="nav-link" href="<?= BASE_URL ?>/pages/about.php">Про проект</a>
-                            <a class="nav-link" href="<?= BASE_URL ?>/pages/contact.php">Зворотний зв'язок</a>
+                            <a class="nav-link" href="<?= BASE_URL ?>/pages/feedback.php">Зворотний зв'язок</a>
                         <?php endif; ?>
                     </div>
                 </div>

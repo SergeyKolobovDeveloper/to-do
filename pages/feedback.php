@@ -1,4 +1,8 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
@@ -11,8 +15,27 @@ require_once __DIR__ . '/../includes/header.php';
                     Маєте ідеї щодо покращення DiloFlow або знайшли помилку? Напишіть нам!
                 </p>
 
+                <?php if (isset($_SESSION['success'])): ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <?= htmlspecialchars($_SESSION['success']) ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    <?php unset($_SESSION['success']); ?>
+                <?php endif; ?>
+
+                <?php if (isset($_SESSION['errors'])): ?>
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            <?php foreach ($_SESSION['errors'] as $error): ?>
+                                <li><?= htmlspecialchars($error) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                    <?php unset($_SESSION['errors']); ?>
+                <?php endif; ?>
+
                 <div class="card shadow-sm border-0 p-4">
-                    <form action="" method="POST">
+                    <form action="<?= BASE_URL ?>/actions/send-feedback.php" method="POST">
                         <div class="mb-3">
                             <label for="name" class="form-label">Введіть ваше ім'я</label>
                             <input type="text" id="name" name="name" class="form-control" placeholder="Введіть ваше ім'я" required>
@@ -28,7 +51,7 @@ require_once __DIR__ . '/../includes/header.php';
                             <select id="subject" name="subject" class="form-select">
                                 <option value="idea">Пропозиція / Ідея</option>
                                 <option value="bug">Повідомити про баг</option>
-                                <option value="other">Загальне запитання</option>
+                                <option value="other" selected>Загальне запитання</option>
                             </select>
                         </div>
 

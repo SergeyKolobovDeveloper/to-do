@@ -1,4 +1,7 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once __DIR__ . '/../includes/header.php';
 ?>
 <main>
@@ -46,13 +49,22 @@ require_once __DIR__ . '/../includes/header.php';
                             <li>Встановлення дедлайнів та сортування за датою.</li>
                             <li>Підтримка PWA (можливість встановити як додаток на телефон)</li>
                         </ul>
+                        <hr class="my-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="card-title m-0 fw-bold">Версія 1.3</h5>
+                            <span class="badge bg-success">17 Серпня 2026</span>
+                        </div>
+                        <ul>
+                            <li>Додано сторінку "Про проект"</li>
+                            <li>Додано сторінку "Зворотній зв'язок", щоб мати зв'язок для ваши ідей та якщо виникнуть проблеми</li>
+                        </ul>
                     </div>
                 </div>
 
                 <div class="text-center mt-5 p-4 bg-light rounded-3">
                     <h4>Маєте ідеї щодо розвитку DiloFlow?</h4>
                     <p class="text-muted">Ми постійно працюємо над покращенням сервісу та ділимося новинами.</p>
-                    <a href="contacts.php" class="btn btn-outline-success">Залишити відгук або пропозицію</a>
+                    <a href="<?= BASE_URL ?>/pages/feedback.php" class="btn btn-outline-success">Залишити відгук або пропозицію</a>
                 </div>
 
             </div>

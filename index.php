@@ -19,7 +19,7 @@ require_once __DIR__ . '/includes/header.php';
                         📲 Встановити на телефон
                     </button>
                 </div>
-                <a href="#" class="btn btn-outline-secondary btn-lg px-4">Дізнатися більше</a>
+                <a href="<?= BASE_URL ?>/pages/about.php" class="btn btn-outline-secondary btn-lg px-4">Дізнатися більше</a>
             </div>
 
             <div class="mt-4 text-muted small">

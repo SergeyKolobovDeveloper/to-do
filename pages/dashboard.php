@@ -114,8 +114,12 @@ require_once __DIR__ . '/../includes/header.php';
     <div class="table-responsive">
         <table class="table table-bordered border-primary align-middle text-center">
             <thead>
-                <tr>
-                    <th class="text-center">Назва</th>
+                <tr class="align-middle text-center">
+                    <th class="text-center">Назва
+                        <small class="text-muted fw-normal d-block" style="font-size: 0.75rem;">
+                            (натисніть на задачу, щоб змінити її статус)
+                        </small>
+                    </th>
                     <th style="width: 180px;">Дедлайн</th>
                     <th style="width: 200px;">Дії</th>
                     <th style="width: 160px;">Статус</th>
