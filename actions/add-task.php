@@ -9,7 +9,7 @@ if(!isset($_SESSION['user'])){
     exit;
 }
 
-if($_SERVER['REQUEST_METHOD'] ==='POST'){
+if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
     $errorBag = [
         'title' => [],
@@ -19,6 +19,7 @@ if($_SERVER['REQUEST_METHOD'] ==='POST'){
     $title = trim($_POST['title'] ?? '');
     $userId = $_SESSION['user']['id'];
     $dueDate = !empty($_POST['due_date']) ? $_POST['due_date'] : null;
+    $listId = !empty($_POST['list_id']) ? (int)$_POST['list_id'] : null;
 
     if(empty($title)){
         $errorBag['title'][] = 'Поле не може бути пустим!';
@@ -35,24 +36,26 @@ if($_SERVER['REQUEST_METHOD'] ==='POST'){
     if(!empty($errorBag['title']) || !empty($errorBag['due_date'])){
         $_SESSION['errors'] = $errorBag;
         $_SESSION['old'] = $_POST;
-        header('Location: ../pages/create.php');
+        header('Location: ../pages/create.php' . ($listId ? '?list_id=' . $listId : ''));
         exit;
     }
 
     $encryptedTitle = encryptText($title);
 
-    $sql = 'INSERT INTO `tasks` (title, user_id, due_date) VALUES (:title, :user_id, :due_date)';
+    $sql = 'INSERT INTO `tasks` (title, user_id, list_id, due_date) VALUES (:title, :user_id, :list_id, :due_date)';
 
     $result = $pdo->prepare($sql);
     $result->execute([
         'title' => $encryptedTitle,
         'user_id' => $userId,
+        'list_id' => $listId,
         'due_date' => $dueDate
     ]);
 
-    $_SESSION['success'] = 'Нову задачу успішно створено! ✨';
+    $_SESSION['success'] = 'Нову задачу успішно створено!';
 
-    header('Location: ../pages/dashboard.php');
+    // Повертаємо користувача до того списку, у якому створювалася задача
+    header('Location: ../pages/dashboard.php' . ($listId ? '?list_id=' . $listId : ''));
     exit;
 } else {
     header('Location: ../pages/create.php');

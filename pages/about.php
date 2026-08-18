@@ -1,4 +1,5 @@
 <?php
+$title = 'About the project';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -57,6 +58,16 @@ require_once __DIR__ . '/../includes/header.php';
                         <ul>
                             <li>Додано сторінку "Про проект"</li>
                             <li>Додано сторінку "Зворотній зв'язок", щоб мати зв'язок для ваши ідей та якщо виникнуть проблеми</li>
+                        </ul>
+                        <hr class="my-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="card-title m-0 fw-bold">Версія 1.4</h5>
+                            <span class="badge bg-success">18 Серпня 2026</span>
+                        </div>
+                        <ul>
+                            <li>Додано можливість змінити логін і пароль"</li>
+                            <li>Додано можливість розділити задачі за списками ("Навчання", "Робота", "Покупки" тощо)</li>
+                            <li>Додано безпечне видалення задачі</li>
                         </ul>
                     </div>
                 </div>

@@ -74,5 +74,5 @@ $_SESSION['user'] = [
 
 unset($_SESSION['old_values']);
 
-header('Location: ' . BASE_URL . '/pages/dashboard.php');
+header('Location: ' . BASE_URL . '/pages/lists.php');
 exit;

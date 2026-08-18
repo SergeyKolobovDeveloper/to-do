@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['id'])) {
 $id = (int)$_POST['id'];
 $title = trim($_POST['title'] ?? '');
 $dueDate = !empty($_POST['due_date']) ? $_POST['due_date'] : null;
+$listId = !empty($_POST['list_id']) ? (int)$_POST['list_id'] : null;
 $userId = $_SESSION['user']['id'];
 
 $errorBag = [
@@ -36,7 +37,8 @@ if (!empty($errorBag['title'])) {
     $_SESSION['errors'] = $errorBag;
     $_SESSION['old'] = [
         'title' => decryptText($title),
-        'due_date' => $dueDate
+        'due_date' => $dueDate,
+        'list_id' => $listId
     ];
     header('Location: ../pages/update.php?id=' . $id);
     exit;
@@ -44,18 +46,19 @@ if (!empty($errorBag['title'])) {
 
 $encryptedTitle = encryptText($title);
 
-$sql = 'UPDATE `tasks` SET title = :title, due_date = :due_date WHERE id = :id AND user_id = :user_id';
+$sql = 'UPDATE `tasks` SET title = :title, due_date = :due_date, list_id = :list_id WHERE id = :id AND user_id = :user_id';
 
 $result = $pdo->prepare($sql);
 
 $result->execute([
     'title' => $encryptedTitle,
     'due_date' => $dueDate,
+    'list_id' => $listId,
     'id' => $id,
     'user_id' => $userId
 ]);
 
-$_SESSION['success'] = 'Зміни успішно збережено! 💾';
+$_SESSION['success'] = 'Зміни успішно збережено!';
 
-header('Location: ../pages/dashboard.php');
+header('Location: ../pages/dashboard.php' . ($listId ? '?list_id=' . $listId : ''));
 exit;

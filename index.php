@@ -13,7 +13,11 @@ require_once __DIR__ . '/includes/header.php';
             </p>
             <div class="d-flex justify-content-center gap-3 align-items-start flex-wrap">
                 <div class="d-flex flex-column gap-2">
-                    <a href="<?= BASE_URL ?>/auth/login.php" class="btn btn-success btn-lg px-4">Почати безкоштовно</a>
+                    <?php if(isset($_SESSION['user'])):?>
+                        <a href="<?= BASE_URL ?>/pages/lists.php" class="btn btn-success btn-lg px-4">Кабінет</a>
+                    <?php else :?>
+                        <a href="<?= BASE_URL ?>/auth/login.php" class="btn btn-success btn-lg px-4">Почати безкоштовно</a>
+                    <?php endif; ?>
                     
                     <button id="installAppBtn" style="display: none;" class="btn btn-outline-success btn-md px-3">
                         📲 Встановити на телефон
