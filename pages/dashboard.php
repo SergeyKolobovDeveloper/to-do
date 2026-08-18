@@ -25,32 +25,35 @@ if ($listId) {
 
 switch($sort) {
     case 'date_desc':
-        $orderBy = 'due_date IS NULL ASC, due_date DESC, id DESC';
+        $orderBy = 't.due_date IS NULL ASC, t.due_date DESC, t.id DESC';
         break;
     case 'newest':
-        $orderBy = 'id DESC';
+        $orderBy = 't.id DESC';
         break;
     case 'date_asc':
     default:
-        $orderBy = 'due_date IS NULL ASC, due_date ASC, id DESC';
+        $orderBy = 't.due_date IS NULL ASC, t.due_date ASC, t.id DESC';
         break;
 }
 
-// Формуємо базвий SQL-запит
-$sql = 'SELECT * FROM `tasks` WHERE `user_id` = :user_id';
+// Формуємо базовий SQL-запит із підтягуванням назви списку
+$sql = 'SELECT t.*, tl.title AS list_title 
+        FROM `tasks` t 
+        LEFT JOIN `task_lists` tl ON t.list_id = tl.id 
+        WHERE t.`user_id` = :user_id';
 $params = ['user_id' => $userId];
 
 // Додаємо фільтр за списком (якщо обрано)
 if ($listId) {
-    $sql .= ' AND `list_id` = :list_id';
+    $sql .= ' AND t.`list_id` = :list_id';
     $params['list_id'] = $listId;
 }
 
 // Додаємо фільтр за статусом
 if ($filter === 'active'){
-    $sql .= ' AND is_completed = 0';
+    $sql .= ' AND t.is_completed = 0';
 } elseif ($filter === 'completed') {
-    $sql .= ' AND is_completed = 1';
+    $sql .= ' AND t.is_completed = 1';
 }
 
 $sql .= " ORDER BY {$orderBy}";
@@ -98,8 +101,19 @@ require_once __DIR__ . '/../includes/header.php';
     </div>
 <?php else: ?>
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <a href="<?= BASE_URL ?>/pages/create.php<?= $listId ? '?list_id=' . $listId : '' ?>" class="btn btn-success">Додати задачу!</a>
-        <a href="<?= BASE_URL ?>/pages/lists.php" class="btn btn-outline-success">До списків та проєктів</a>
+        <div class="d-flex gap-2">
+            <a href="<?= BASE_URL ?>/pages/create.php<?= $listId ? '?list_id=' . $listId : '' ?>" class="btn btn-success">
+                Додати задачу!
+            </a>
+            <?php if ($listId): ?>
+                <a href="<?= BASE_URL ?>/pages/dashboard.php" class="btn btn-outline-secondary">
+                    📋 Усі задачі
+                </a>
+            <?php endif; ?>
+        </div>
+        <a href="<?= BASE_URL ?>/pages/lists.php" class="btn btn-outline-success">
+            До списків та проєктів
+        </a>
     </div>
     <br>
     <?php if(isset($_SESSION['success'])): ?>
@@ -158,6 +172,9 @@ require_once __DIR__ . '/../includes/header.php';
                             (натисніть на задачу, щоб змінити її статус)
                         </small>
                     </th>
+                    <?php if (!$listId): ?>
+                        <th style="width: 150px;">Список</th>
+                    <?php endif; ?>
                     <th style="width: 180px;">Дедлайн</th>
                     <th style="width: 200px;">Дії</th>
                     <th style="width: 160px;">Статус</th>
@@ -166,7 +183,7 @@ require_once __DIR__ . '/../includes/header.php';
             <tbody>
                 <?php if(empty($data)): ?>
                 <tr>
-                    <td colspan="4">
+                    <td colspan="<?= $listId ? '4' : '5' ?>">
                         <strong>
                             <?= $filter === 'active' ? 'Поки немає активних задач!' : 
                             ($filter === 'completed' ? 'Поки немає виконаних задач! ' : '') ?>
@@ -181,6 +198,17 @@ require_once __DIR__ . '/../includes/header.php';
                         <?= htmlspecialchars(decryptText($item['title'])) ?>
                         </a>
                     </td>
+                    <?php if (!$listId): ?>
+                        <td>
+                            <?php if (!empty($item['list_title'])): ?>
+                                <span class="badge bg-info text-dark">
+                                    <?= htmlspecialchars($item['list_title']) ?>
+                                </span>
+                            <?php else: ?>
+                                <span class="text-muted" style="font-size: 0.85rem;">Загальний</span>
+                            <?php endif; ?>
+                        </td>
+                    <?php endif; ?>
                     <td>
                     <?php if (!empty($item['due_date'])): ?>
                         <?php
