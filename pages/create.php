@@ -66,7 +66,25 @@ require_once __DIR__ . '/../includes/header.php';
                         </div>
                     <?php endif; ?>
                 </div>
-
+                <h5 class="mb-3 text-primary"><i class="bi bi-bell"></i>Нагадування
+                    <small class="text-muted fw-normal d-block" style="font-size: 0.95rem;">
+                            <b>(Ця функція поки не працює, знаходиться на стадії розробки)</b>
+                    </small>
+                </h5>
+                <div class="mb-3">
+                    <label for="remind_at" class="form-label font-weight-bold">Час нагадування</label>
+                    <input type="datetime-local" name="remind_at" id="remind_at" class="form-control"
+                        value="<?= htmlspecialchars($old['remind_at'] ?? '')?>">
+                </div>
+                <div class="mb-3">
+                    <label for="notify_via" class="form-label font-weight-bold">Спосіб сповіщення</label>
+                    <select name="notify_via"  id="notify_via" class="form-select">
+                        <option value="none" <?= ($old['notify_via'] ?? '') === 'none' ? 'selected' : ''?>>Не нагадувати</option>
+                        <option value="email" <?= ($old['notify_via'] ?? '') === 'email' ? 'selected' : ''?>>Email</option>
+                        <option value="telegram" <?= ($old['notify_via'] ?? '') === 'telegram' ? 'selected' : ''?>>Telegram</option>
+                        <option value="both" <?= ($old['notify_via'] ?? '') === 'both' ? 'selected' : ''?>>Email + Telegram</option>
+                    </select>
+                </div>
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-success">Додати</button>
                     <a href="<?= BASE_URL ?>/pages/dashboard.php<?= $urlListId ? '?list_id=' . $urlListId : '' ?>" class="btn btn-secondary">Назад</a>

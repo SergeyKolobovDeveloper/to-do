@@ -69,7 +69,8 @@ $_SESSION['user'] = [
     'id'          => $data['id'],
     'name'        => $data['name'],
     'email'       => $data['email'],
-    'is_verified' => $data['is_verified']
+    'is_verified' => $data['is_verified'],
+    'timezone'    => $data['timezone'] ?? 'Europe/Kyiv'
 ];
 
 unset($_SESSION['old_values']);

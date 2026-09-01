@@ -18,9 +18,9 @@ $listId = isset($_GET['list_id']) && $_GET['list_id'] !== '' ? (int)$_GET['list_
 // Назва списку (якщо обрано конкретний список)
 $currentListTitle = null;
 if ($listId) {
-    $listStmt = $pdo->prepare('SELECT title FROM `task_lists` WHERE id = :id AND user_id = :user_id');
-    $listStmt->execute(['id' => $listId, 'user_id' => $userId]);
-    $currentListTitle = $listStmt->fetchColumn();
+    $listData = $pdo->prepare('SELECT title FROM `task_lists` WHERE id = :id AND user_id = :user_id');
+    $listData->execute(['id' => $listId, 'user_id' => $userId]);
+    $currentListTitle = $listData->fetchColumn();
 }
 
 switch($sort) {
@@ -56,10 +56,51 @@ if ($filter === 'active'){
     $sql .= ' AND t.is_completed = 1';
 }
 
-$sql .= " ORDER BY {$orderBy}";
-$result = $pdo->prepare($sql);
-$result->execute($params);
+$perPage = 5;
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
 
+if ($page < 1) {
+    $page = 1;
+}
+
+$countSql = 'SELECT COUNT(*) FROM `tasks` t WHERE t.`user_id` = :user_id';
+$countParams = ['user_id' => $userId];
+
+if($listId) {
+    $countSql .= ' AND t.`list_id` = :list_id';
+    $countParams['list_id'] = $listId;
+}
+
+if ($filter === 'active') {
+    $countSql .= ' AND t.is_completed = 0';
+} elseif ($filter === 'completed') {
+    $countSql .= ' AND t.is_completed = 1';
+}
+
+$countData = $pdo->prepare($countSql);
+$countData->execute($countParams);
+$filterTaskCount = $countData->fetchColumn();
+
+$totalPages = ceil($filterTaskCount / $perPage);
+
+if($totalPages > 0 && $page > $totalPages) {
+    $page = $totalPages;
+}
+
+$offset = ($page - 1) * $perPage;
+
+$sql .= " ORDER BY {$orderBy} LIMIT :limit OFFSET :offset";
+
+$result = $pdo->prepare($sql);
+
+foreach ($params as $key => $el) {
+    $result->bindValue(":{$key}", $el);
+}
+
+$result->bindValue(':limit', $perPage, PDO::PARAM_INT);
+$result->bindValue(':offset', $offset, PDO::PARAM_INT);
+
+$result->execute();
 $data = $result->fetchAll(PDO::FETCH_ASSOC);
 
 // Отримуємо загальну кількість задач користувача (для перевірки порожнього стану)
@@ -69,9 +110,9 @@ if ($listId) {
     $totalSql .= ' AND `list_id` = :list_id';
     $totalParams['list_id'] = $listId;
 }
-$totalStmt = $pdo->prepare($totalSql);
-$totalStmt->execute($totalParams);
-$totalTaskCount = $totalStmt->fetchColumn();
+$totalData = $pdo->prepare($totalSql);
+$totalData->execute($totalParams);
+$totalTaskCount = $totalData->fetchColumn();
 
 $today = date('Y-m-d');
 
@@ -176,6 +217,11 @@ require_once __DIR__ . '/../includes/header.php';
                         <th style="width: 150px;">Список</th>
                     <?php endif; ?>
                     <th style="width: 180px;">Дедлайн</th>
+                    <th style="width: 170px;">Нагадування
+                        <small class="text-muted fw-normal d-block" style="font-size: 0.75rem;">
+                            (Ця функція поки не працює, знаходиться на стадії розробки)
+                        </small>
+                    </th>
                     <th style="width: 200px;">Дії</th>
                     <th style="width: 160px;">Статус</th>
                 </tr>
@@ -225,6 +271,26 @@ require_once __DIR__ . '/../includes/header.php';
                             <span class="text-muted">Термін не вказано!</span>
                     <?php endif; ?>
                     </td>
+                    <td class="text-center aling-middle">
+                        <?php if ($item['notify_via'] === 'both'):?>
+                            <span class="badge bg-primary md-1 d-inline-blog">
+                                <i class="bi bi-telegram"></i> Telegram
+                            </span>
+                            <span class="badge bg-info text-dark d-inline-blpck">
+                                <i class="bi bi-envelope-at"></i> Email
+                            </span>
+                        <?php elseif ($item['notify_via'] === 'telegram'):?>
+                            <span class="badge bg-primary">
+                                <i class="bi bi-telegram"></i> Telegram
+                            </span>
+                        <?php elseif ($item['notify_via'] === 'email'):?>
+                            <span class="badge bg-info text-dark ">
+                                <i class="bi bi-envelope-at"></i> Email
+                            </span>
+                        <?php else:?>
+                            <span class="text-muted small">Немає</span>
+                        <?php endif; ?>
+                    </td>
                     <td class="text-nowrap">
                         <div class="d-flex align-items-center justify-content-center gap-2">
                             <a href="update.php?id=<?= $item['id'] ?><?= !empty($listId) ? '&list_id=' . $listId : '' ?>" class="btn btn-primary btn-sm">
@@ -250,6 +316,20 @@ require_once __DIR__ . '/../includes/header.php';
             </tbody>
         </table>
     </div>
+    
+    <?php if($totalPages > 1): ?>
+        <nav aria-label="Пагінація задач" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <li class="page-item <?= ($page == $i) ? 'active' : '' ?>">
+                        <a class="page-link" href="?page=<?= $i ?>&filter=<?= $filter ?>&sort=<?= $sort ?><?= $listParam ?>">
+                            <?= $i ?>
+                        </a>
+                    </li>
+                <?php endfor; ?>
+            </ul>
+        </nav>
+    <?php endif; ?>
 <?php endif; ?>
 </main>
 <?php

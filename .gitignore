@@ -1,7 +1,7 @@
-db.local.php
-env.php
+config/db.local.php
+config/env.php
+config/migrate_lists.php
 manifest.php
-migrate_lists.php
 
 .DS_Store
 Thumbs.db

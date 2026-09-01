@@ -33,3 +33,4 @@ if ($listId) {
 
 header('Location: ' . $redirectUrl);
 exit;
+   

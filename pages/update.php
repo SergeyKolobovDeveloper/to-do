@@ -38,10 +38,29 @@ if(!$data){
 }
 
 // Отримую всі списки користувача для випадаючого списку
-$listsStmt = $pdo->prepare('SELECT id, title FROM `task_lists` WHERE user_id = :user_id ORDER BY created_at DESC');
-$listsStmt->execute(['user_id' => $userId]);
-$userLists = $listsStmt->fetchAll(PDO::FETCH_ASSOC);
+$listsData = $pdo->prepare('SELECT id, title FROM `task_lists` WHERE user_id = :user_id ORDER BY created_at DESC');
+$listsData->execute(['user_id' => $userId]);
+$userLists = $listsData->fetchAll(PDO::FETCH_ASSOC);
 
+// Універсальна конвертація
+$remindAtValue = '';
+$rawRemindAt = $old['remind_at'] ?? $data['remind_at'] ?? null;
+
+if(!empty($rawRemindAt)) {
+    if(!empty($old['remind_at'])) {
+        $remindAtValue = $old['remind_at'];
+    } else {
+        $userTimezone = $_SESSION['user']['timezone'] ?? 'Europe/Kyiv';
+
+        $dt = new DateTime($rawRemindAt, new DateTimeZone('UTC'));
+
+        $dt->setTimezone(new DateTimeZone($userTimezone));
+
+        $remindAtValue = $dt->format('Y-m-d\TH:i');
+    }
+}
+
+$selectedNotifyVia = $old['notify_via'] ?? $data['notify_via'] ?? 'none';
 $title = 'Редагувати задачу';
 require_once __DIR__ . '/../includes/header.php';
 ?>
@@ -81,6 +100,27 @@ require_once __DIR__ . '/../includes/header.php';
                     <label for="due_date" class="form-label">Дата виконання</label>
                     <input type="date" name="due_date" id="due_date" class="form-control" 
                         value="<?= htmlspecialchars($old['due_date'] ?? $data['due_date'] ?? '') ?>">
+                </div>
+
+                <h5 class="mb-3 text-primary"><i class="bi bi-bell"></i>Нагадування
+                    <small class="text-muted fw-normal d-block" style="font-size: 0.95rem;">
+                            <b>(Ця функція поки не працює, знаходиться на стадії розробки)</b>
+                    </small>
+                </h5>
+                <div>
+                    <label for="remind_at" class="form-label">Дата та час нагадування</label>
+                    <input type="datetime-local" name="remind_at" id="remind_at" class="form-control" 
+                            value="<?= htmlspecialchars($remindAtValue) ?>">
+                </div>
+
+                <div class="mb-3">
+                    <label for="notify_via" class="form-label">Спосіб сповіщення</label>
+                    <select name="notify_via" id="notify_via" class="form-select">
+                        <option value="none" <?= $selectedNotifyVia === 'none' ? 'selected' : '' ?>>Не нагадувати!</option>
+                        <option value="email" <?= $selectedNotifyVia === 'email' ? 'selected' : '' ?>>Тільки Email</option>
+                        <option value="telegram" <?= $selectedNotifyVia === 'telegram' ? 'selected' : '' ?>>Тільки Telegram</option>
+                        <option value="both" <?= $selectedNotifyVia === 'both' ? 'selected' : ''?>>Email + Telegram</option>
+                    </select>
                 </div>
 
                 <input type="hidden" name="id" value="<?= $data['id'] ?>">
